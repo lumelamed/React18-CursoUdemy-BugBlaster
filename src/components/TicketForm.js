@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function TicketForm() {
+export default function TicketForm({ dispatch }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("1");
@@ -19,6 +19,19 @@ export default function TicketForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const ticketData = {
+      id: new Date().toISOString(),
+      title,
+      description,
+      priority,
+    };
+
+    dispatch({
+      type: "ADD_TICKET",
+      payload: ticketData,
+    });
+
     clearForm();
   };
 
@@ -40,6 +53,24 @@ export default function TicketForm() {
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
       </div>
+      <fieldset className="priority-fieldset">
+        <legend>Priority</legend>
+        {Object.entries(priorityLabels).map(([value, label]) => (
+          <label key={value} className="priority-label">
+            <input
+              type="radio"
+              value={value}
+              checked={priority === value}
+              className="priority-input"
+              onChange={(e) => setPriority(e.target.value)}
+            ></input>
+            {label}
+          </label>
+        ))}
+      </fieldset>
+      <button type="submit" className="button">
+        Submit
+      </button>
     </form>
   );
 }
